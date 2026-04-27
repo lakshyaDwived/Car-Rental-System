@@ -18,7 +18,7 @@ if (fs.existsSync(frontendPath)) {
   app.use(express.static(frontendPath));
 } else {
   console.log(
-    '⚠️  Frontend dist directory not found. Please run "npm run build" in the frontend directory.'
+    '⚠️  Frontend dist directory not found. Please run "npm run build" in the frontend directory.',
   );
   console.log("📁 Expected path:", frontendPath);
 }
@@ -404,7 +404,7 @@ app.get("*", (req, res) => {
   }
 });
 
-// Initialize with default admin user
+// Initialize with default admin user and sample cars
 const initializeAdmin = async () => {
   try {
     const adminExists = await User.findOne({ role: "admin" });
@@ -415,13 +415,143 @@ const initializeAdmin = async () => {
         email: "admin@rentcar.com",
         password: hashedPassword,
         role: "admin",
-        status: "active", // Ensure admin is active by default
+        status: "active",
       });
       await admin.save();
       console.log("Default admin user created: admin@rentcar.com / admin123");
     }
+
+    // Seed sample cars if none exist
+    const carCount = await Car.countDocuments();
+    if (carCount === 0) {
+      const sampleCars = [
+        {
+          name: "Toyota Innova",
+          model: "Crysta VX",
+          image:
+            "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400",
+          pricePerHour: 1500,
+          description:
+            "Premium 7-seater SUV with excellent comfort and features",
+          quantity: 5,
+          available: 3,
+          category: "suv",
+          transmission: "Automatic",
+          seats: 7,
+          features: [
+            "AC",
+            "Power Steering",
+            "ABS",
+            "Bluetooth",
+            "Reverse Camera",
+          ],
+        },
+        {
+          name: "Honda City",
+          model: "VX CVT",
+          image:
+            "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400",
+          pricePerHour: 800,
+          description: "Premium sedan with powerful engine and rich features",
+          quantity: 8,
+          available: 5,
+          category: "sedan",
+          transmission: "Automatic",
+          seats: 5,
+          features: [
+            "AC",
+            "Power Windows",
+            "ABS",
+            "Android Auto",
+            "LED Lights",
+          ],
+        },
+        {
+          name: "Maruti Swift",
+          model: "ZXI Plus",
+          image:
+            "https://images.unsplash.com/photo-1563720223185-11003d516935?w=400",
+          pricePerHour: 500,
+          description: "Compact hatchback with great fuel efficiency",
+          quantity: 10,
+          available: 7,
+          category: "compact",
+          transmission: "Manual",
+          seats: 5,
+          features: [
+            "AC",
+            "Power Steering",
+            "Dual Airbags",
+            "Smartplay Studio",
+          ],
+        },
+        {
+          name: "BMW 3 Series",
+          model: "320d Sport",
+          image:
+            "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400",
+          pricePerHour: 2500,
+          description:
+            "Luxury sedan with premium features and powerful performance",
+          quantity: 3,
+          available: 2,
+          category: "luxury",
+          transmission: "Automatic",
+          seats: 5,
+          features: [
+            "Leather Seats",
+            "Sunroof",
+            "Navigation",
+            "Parking Sensors",
+            "Wireless Charging",
+          ],
+        },
+        {
+          name: "Kia Seltos",
+          model: "GTX Plus",
+          image:
+            "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400",
+          pricePerHour: 1200,
+          description: "Feature-loaded SUV with bold design",
+          quantity: 6,
+          available: 4,
+          category: "suv",
+          transmission: "Automatic",
+          seats: 5,
+          features: [
+            "Panoramic Sunroof",
+            "10.25-inch Screen",
+            "Wireless Charging",
+            "Air Purifier",
+          ],
+        },
+        {
+          name: "Hyundai Creta",
+          model: "SX Executive",
+          image:
+            "https://images.unsplash.com/photo-1563720223185-11003d516935?w=400",
+          pricePerHour: 1100,
+          description: "Popular compact SUV with modern features",
+          quantity: 7,
+          available: 5,
+          category: "suv",
+          transmission: "Automatic",
+          seats: 5,
+          features: [
+            "AC",
+            "Reverse Camera",
+            "Bluetooth",
+            "Keyless Entry",
+            "Cruise Control",
+          ],
+        },
+      ];
+
+      await Car.insertMany(sampleCars);
+      console.log(`✅ Seeded ${sampleCars.length} sample cars to database`);
+    }
   } catch (error) {
-    console.error("Error creating admin user:", error);
+    console.error("Error initializing data:", error);
   }
 };
 
